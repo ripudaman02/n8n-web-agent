@@ -44,7 +44,7 @@
     {
       "parameters": {
         "executeOnce": false,
-        "command": "=URL={{$json[\"URL\"]}} GOAL=\"{{$json[\"GOAL\"]}}\" node /Users/ripudamansharma/n8n-web-agent/browser_agent.js\n"
+        "command": "=URL=\"{{ $json.URL }}\" GOAL=\"{{ $json.GOAL }}\" cd /Users/ripudamansharma/n8n-web-agent && node browser_agent.js\n"
       },
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
@@ -81,8 +81,8 @@
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.2,
       "position": [
-        940,
-        20
+        0,
+        160
       ],
       "id": "036d4141-2a7d-4667-b32a-4cc8da0a89f7",
       "name": "Schedule Trigger"
@@ -117,6 +117,17 @@
         [
           {
             "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
             "type": "main",
             "index": 0
           }
