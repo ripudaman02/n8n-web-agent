@@ -1,0 +1,138 @@
+{
+  "name": "Semi-Autonomous Web Agent",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "7d46afbc-ec26-4ac6-ab2e-25383e000f68",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "994d7e4d-cddf-4180-846c-6112dc05e7a4",
+              "name": "URL",
+              "value": "https://books.toscrape.com",
+              "type": "string"
+            },
+            {
+              "id": "43f16ee9-d65a-488a-b1e2-0559b3c6f531",
+              "name": "GOAL",
+              "value": "Find the highest priced book",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        220,
+        0
+      ],
+      "id": "fe4a0f56-2197-4eab-921a-15520ee3c9d4",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "executeOnce": false,
+        "command": "=URL={{$json[\"URL\"]}} GOAL=\"{{$json[\"GOAL\"]}}\" node /Users/ripudamansharma/n8n-web-agent/browser_agent.js\n"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        440,
+        0
+      ],
+      "id": "09ed308a-f3e4-4ee7-a412-69c77ccfbe59",
+      "name": "Execute Command"
+    },
+    {
+      "parameters": {
+        "jsCode": "// stdout string uthao\nconst raw = $input.first().json.stdout;\n\n// agar empty hai\nif (!raw) {\n  return [{\n    json: {\n      status: \"ERROR\",\n      message: \"No output received from browser_agent.js\"\n    }\n  }];\n}\n\n// JSON parse karo\nconst data = JSON.parse(raw);\n\n// FINAL OUTPUT (n8n-friendly)\nreturn [{\n  json: {\n    status: \"SUCCESS\",\n    goal: data.goal,\n    highestPricedBook: data.highestPricedBook,\n    price: data.price,\n    totalBooksChecked: data.totalBooksChecked\n  }\n}];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        720,
+        20
+      ],
+      "id": "0c4fdb5d-d276-4a5e-9e1f-e68dc8567465",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 10
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        940,
+        20
+      ],
+      "id": "036d4141-2a7d-4667-b32a-4cc8da0a89f7",
+      "name": "Schedule Trigger"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Execute Command",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute Command": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "aef348d3-f2ae-4af3-8d70-1fec14566a64",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "24f78a47e235371686e0550e90be0b1436b3704b4f0b0483f6681cdb8207e348"
+  },
+  "id": "69CEetqKn6eKPti7",
+  "tags": []
+}
